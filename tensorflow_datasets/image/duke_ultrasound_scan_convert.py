@@ -167,7 +167,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
         image = scan_convert(iq.astype(np.float32, row['initial_radius'].numpy(),
           row['final_radius'].numpy(),
           row['initial_angle'].numpy(),
-          row['final_angle'].numpy())
+          row['final_angle'].numpy()))
 
         yield row['filename'], {
             'das': {
