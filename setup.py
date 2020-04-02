@@ -134,6 +134,7 @@ DATASET_EXTRAS = {
     'svhn': ['scipy'],
     'the300w_lp': ['scipy'],
     'duke_ultrasound': ['scipy'],
+    'duke_ultrasound_scanConvert': ['scipy','polarTransform']
     'wider_face': ['Pillow'],
     'wikipedia': ['mwparserfromhell', 'apache_beam'],
     'lsun': ['tensorflow-io'],
@@ -155,6 +156,7 @@ all_dataset_extras = list(itertools.chain.from_iterable(
 EXTRAS_REQUIRE = {
     'apache-beam': ['apache-beam'],
     'matplotlib': ['matplotlib'],
+    'polarTransform': ['polarTransform'],
     'tensorflow': ['tensorflow>=1.15.0'],
     'tensorflow_gpu': ['tensorflow-gpu>=1.15.0'],
     # Tests dependencies are installed in ./oss_scripts/oss_pip_install.sh

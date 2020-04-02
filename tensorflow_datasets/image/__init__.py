@@ -29,6 +29,7 @@ from tensorflow_datasets.image.div2k import Div2k
 from tensorflow_datasets.image.downsampled_imagenet import DownsampledImagenet
 from tensorflow_datasets.image.dsprites import Dsprites
 from tensorflow_datasets.image.duke_ultrasound import DukeUltrasound
+from tensorflow_datasets.image.duke_ultrasound_scanconvert import DukeUltrasoundScanConvert
 from tensorflow_datasets.image.flic import Flic
 from tensorflow_datasets.image.lost_and_found import LostAndFound
 from tensorflow_datasets.image.lsun import Lsun

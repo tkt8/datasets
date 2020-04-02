@@ -148,6 +148,11 @@ class LazyImporter(object):
 
   @utils.classproperty
   @classmethod
+  def polar_transform(cls):
+  	return _try_import("polarTransform")
+
+  @utils.classproperty
+  @classmethod
   def test_foo(cls):
     """For testing purposes only."""
     return _try_import("test_foo")
