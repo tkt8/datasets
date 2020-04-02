@@ -80,7 +80,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
 
   def __init__(self, custom_csv_splits=None, **kwargs):
     """custom_csv_splits is a dictionary of { 'name': 'csvpaths'}."""
-    super(DukeUltrasound, self).__init__(**kwargs)
+    super(DukeUltrasoundScanConvert, self).__init__(**kwargs)
     self.custom_csv_splits = custom_csv_splits if custom_csv_splits else {}
 
   def _info(self):
