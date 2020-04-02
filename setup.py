@@ -134,7 +134,7 @@ DATASET_EXTRAS = {
     'svhn': ['scipy'],
     'the300w_lp': ['scipy'],
     'duke_ultrasound': ['scipy'],
-    'duke_ultrasound_scanConvert': ['scipy','polarTransform']
+    'duke_ultrasound_scanConvert': ['scipy','polarTransform'],
     'wider_face': ['Pillow'],
     'wikipedia': ['mwparserfromhell', 'apache_beam'],
     'lsun': ['tensorflow-io'],
