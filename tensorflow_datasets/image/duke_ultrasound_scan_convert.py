@@ -138,7 +138,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
 
   def scan_convert(image, irad, frad, iang, fang):
     """Scan converts beam lines"""
-    pt = tdfs.core.lazy_imports.polar_transform
+    pt = tfds.core.lazy_imports.polar_transform
     image, _ = pt.convertToCartesianImage(
         np.transpose(image),
         initialRadius=irad,
