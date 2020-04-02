@@ -163,7 +163,8 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
         iq = iq / iq.max()
         iq = 20 * np.log10(iq)
 
-        image = scan_convert(data, row['initial_radius'].numpy(),
+       
+        image = scan_convert(iq.astype(np.float32, row['initial_radius'].numpy(),
           row['final_radius'].numpy(),
           row['initial_angle'].numpy(),
           row['final_angle'].numpy())
