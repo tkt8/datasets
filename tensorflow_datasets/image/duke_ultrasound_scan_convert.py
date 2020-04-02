@@ -163,11 +163,17 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
         iq = iq / iq.max()
         iq = 20 * np.log10(iq)
 
-       
-        image = scan_convert(iq.astype(np.float32, row['initial_radius'].numpy(),
-          row['final_radius'].numpy(),
-          row['initial_angle'].numpy(),
-          row['final_angle'].numpy()))
+        polarTransform = tfds.core.lazy_imports.polar_transform
+        image, _ = polarTransform.convertToCartesianImage(
+          np.transpose(iq.astype(np.float32)),
+          initialRadius=row['initial_radius'].numpy(),
+          finalRadius=row['final_radius'].numpy(),
+          initialAngle=row['initial_angle'].numpy(),
+          finalAngle=row['final_angle'].numpy(),
+          hasColor=False,
+          order=1)
+        image_scan = np.transpose(image[:, int(row['initial_radius'].numpy()):])
+        
 
         yield row['filename'], {
             'das': {
