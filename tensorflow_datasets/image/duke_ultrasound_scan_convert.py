@@ -34,7 +34,7 @@ _DESCRIPTION = """
 """
 
 _DATA_URL = {
-    'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
+    #'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
     'mark_data': 'https://research.repository.duke.edu/downloads/4x51hj56d'
 }
 
@@ -94,7 +94,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
             gen_kwargs={
                 'datapath': {
                     'mark_data': dl_paths['mark_data'],
-                    'phantom_data': dl_paths['phantom_data']
+                    #'phantom_data': dl_paths['phantom_data']
                 },
                 'csvpath': dl_paths[name]
             }) for name, _ in _DEFAULT_SPLITS.items()
@@ -111,20 +111,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
 
     return splits
 
-  def scan_convert(image, irad, frad, iang, fang):
-    """Scan converts beam lines"""
-    pt = tfds.core.lazy_imports.polar_transform
-    image, _ = pt.convertToCartesianImage(
-        np.transpose(image),
-        initialRadius=irad,
-        finalRadius=frad,
-        initialAngle=iang,
-        finalAngle=fang,
-        hasColor=False,
-        order=1)
-    return np.transpose(image[:, int(irad):])
-
-  def _generate_examples(self, datapath, csvpath):
+    def _generate_examples(self, datapath, csvpath):
     with tf.io.gfile.GFile(csvpath) as f:
       reader = csv.DictReader(f)
       for row in reader:
@@ -141,7 +128,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
         polarTransform = tfds.core.lazy_imports.polar_transform
         image, _ = polarTransform.convertToCartesianImage(
           np.transpose(iq.astype(np.float32)),
-          initialRadius=tfds.as_numpy(row['initial_radius']),
+          initialRadius=row['initial_radius'].numpy(),
           finalRadius=row['final_radius'].numpy(),
           initialAngle=row['initial_angle'].numpy(),
           finalAngle=row['final_angle'].numpy(),
