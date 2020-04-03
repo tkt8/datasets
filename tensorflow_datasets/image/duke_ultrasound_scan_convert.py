@@ -34,17 +34,17 @@ _DESCRIPTION = """
 """
 
 _DATA_URL = {
-    #'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
+    'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
     'mark_data': 'https://research.repository.duke.edu/downloads/4x51hj56d'
 }
 
 _DEFAULT_SPLITS = {
-    #'train': 'https://research.repository.duke.edu/downloads/tt44pn391',
-    #'test': 'https://research.repository.duke.edu/downloads/zg64tm441',
-    #'validation': 'https://research.repository.duke.edu/downloads/dj52w535x',
-    'MARK': 'https://research.repository.duke.edu/downloads/wd375w77v'#,
-    #'A': 'https://research.repository.duke.edu/downloads/nc580n18d',
-    #'B': 'https://research.repository.duke.edu/downloads/7h149q56p'
+    'train': 'https://research.repository.duke.edu/downloads/tt44pn391',
+    'test': 'https://research.repository.duke.edu/downloads/zg64tm441',
+    'validation': 'https://research.repository.duke.edu/downloads/dj52w535x',
+    'MARK': 'https://research.repository.duke.edu/downloads/wd375w77v',
+    'A': 'https://research.repository.duke.edu/downloads/nc580n18d',
+    'B': 'https://research.repository.duke.edu/downloads/7h149q56p'
 }
 
 
@@ -93,8 +93,8 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
             name=name,
             gen_kwargs={
                 'datapath': {
-                    'mark_data': dl_paths['mark_data']#,
-                    #'phantom_data': dl_paths['phantom_data']
+                    'mark_data': dl_paths['mark_data'],
+                    'phantom_data': dl_paths['phantom_data']
                 },
                 'csvpath': dl_paths[name]
             }) for name, _ in _DEFAULT_SPLITS.items()
@@ -111,33 +111,46 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
 
     return splits
 
-    def _generate_examples(self, datapath, csvpath):
-      with tf.io.gfile.GFile(csvpath) as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-          data_key = 'mark_data' if row['target'] == 'mark' else 'phantom_data'
+  def scan_convert(image, irad, frad, iang, fang):
+    """Scan converts beam lines"""
+    pt = tfds.core.lazy_imports.polar_transform
+    image, _ = pt.convertToCartesianImage(
+        np.transpose(image),
+        initialRadius=irad,
+        finalRadius=frad,
+        initialAngle=iang,
+        finalAngle=fang,
+        hasColor=False,
+        order=1)
+    return np.transpose(image[:, int(irad):])
 
-          filepath = os.path.join(datapath[data_key], row['filename'])
-          matfile = tfds.core.lazy_imports.scipy.io.loadmat(
+  def _generate_examples(self, datapath, csvpath):
+    with tf.io.gfile.GFile(csvpath) as f:
+      reader = csv.DictReader(f)
+      for row in reader:
+        data_key = 'mark_data' if row['target'] == 'mark' else 'phantom_data'
+
+        filepath = os.path.join(datapath[data_key], row['filename'])
+        matfile = tfds.core.lazy_imports.scipy.io.loadmat(
             tf.io.gfile.GFile(filepath, 'rb'))
 
-          iq = np.abs(np.reshape(matfile['iq'], -1))
-          iq = iq / iq.max()
-          iq = 20 * np.log10(iq)
+        iq = np.abs(np.reshape(matfile['iq'], -1))
+        iq = iq / iq.max()
+        iq = 20 * np.log10(iq)
 
-          polarTransform = tfds.core.lazy_imports.polar_transform
-          image, _ = polarTransform.convertToCartesianImage(
-            np.transpose(iq.astype(np.float32)),
-            initialRadius=row['initial_radius'].numpy(),
-            finalRadius=row['final_radius'].numpy(),
-            initialAngle=row['initial_angle'].numpy(),
-            finalAngle=row['final_angle'].numpy(),
-            hasColor=False,
-            order=1)
-          image_scan = np.transpose(image[:, int(row['initial_radius'].numpy()):])
+        polarTransform = tfds.core.lazy_imports.polar_transform
+        image, _ = polarTransform.convertToCartesianImage(
+          np.transpose(iq.astype(np.float32)),
+          initialRadius=tfds.as_numpy(row['initial_radius']),
+          finalRadius=row['final_radius'].numpy(),
+          initialAngle=row['initial_angle'].numpy(),
+          finalAngle=row['final_angle'].numpy(),
+          hasColor=False,
+          order=1)
+        image_scan = np.transpose(image[:, int(row['initial_radius'].numpy()):])
         
 
-          yield row['filename'], {
+        yield row['filename'], {
             'das': {
                 'dB': iq.astype(np.float32),
                 'real': np.reshape(matfile['iq'], -1).real.astype(np.float32),
@@ -149,13 +162,9 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
             'focus_cm': row['focus_cm'],
             'height': row['axial_samples'],
             'width': row['lateral_samples'],
-            'initial_radius': row['initial_radius'],
-            'final_radius': row['final_radius'],
-            'initial_angle': row['initial_angle'],
-            'final_angle': row['final_angle'],
             'probe': row['probe'],
             'scanner': row['scanner'],
             'target': row['target'],
             'timestamp_id': row['timestamp_id'],
             'harmonic': row['harm']
-          }
+        }
