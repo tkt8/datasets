@@ -34,7 +34,7 @@ _DESCRIPTION = """
 """
 
 _DATA_URL = {
-    #'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
+    'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
     'mark_data': 'https://research.repository.duke.edu/downloads/4x51hj56d'
 }
 
