@@ -34,17 +34,17 @@ _DESCRIPTION = """
 """
 
 _DATA_URL = {
-    'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
+    #'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
     'mark_data': 'https://research.repository.duke.edu/downloads/4x51hj56d'
 }
 
 _DEFAULT_SPLITS = {
-    'train': 'https://research.repository.duke.edu/downloads/tt44pn391',
-    'test': 'https://research.repository.duke.edu/downloads/zg64tm441',
-    'validation': 'https://research.repository.duke.edu/downloads/dj52w535x',
-    'MARK': 'https://research.repository.duke.edu/downloads/wd375w77v',
-    'A': 'https://research.repository.duke.edu/downloads/nc580n18d',
-    'B': 'https://research.repository.duke.edu/downloads/7h149q56p'
+    #'train': 'https://research.repository.duke.edu/downloads/tt44pn391',
+    #'test': 'https://research.repository.duke.edu/downloads/zg64tm441',
+    #'validation': 'https://research.repository.duke.edu/downloads/dj52w535x',
+    'MARK': 'https://research.repository.duke.edu/downloads/wd375w77v'
+    #'A': 'https://research.repository.duke.edu/downloads/nc580n18d',
+    #'B': 'https://research.repository.duke.edu/downloads/7h149q56p'
 }
 
 
@@ -93,8 +93,8 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
             name=name,
             gen_kwargs={
                 'datapath': {
-                    'mark_data': dl_paths['mark_data'],
-                    'phantom_data': dl_paths['phantom_data']
+                    'mark_data': dl_paths['mark_data']
+                    #'phantom_data': dl_paths['phantom_data']
                 },
                 'csvpath': dl_paths[name]
             }) for name, _ in _DEFAULT_SPLITS.items()
