@@ -112,32 +112,32 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
     return splits
 
     def _generate_examples(self, datapath, csvpath):
-    with tf.io.gfile.GFile(csvpath) as f:
-      reader = csv.DictReader(f)
-      for row in reader:
-        data_key = 'mark_data' if row['target'] == 'mark' else 'phantom_data'
+      with tf.io.gfile.GFile(csvpath) as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+          data_key = 'mark_data' if row['target'] == 'mark' else 'phantom_data'
 
-        filepath = os.path.join(datapath[data_key], row['filename'])
-        matfile = tfds.core.lazy_imports.scipy.io.loadmat(
+          filepath = os.path.join(datapath[data_key], row['filename'])
+          matfile = tfds.core.lazy_imports.scipy.io.loadmat(
             tf.io.gfile.GFile(filepath, 'rb'))
 
-        iq = np.abs(np.reshape(matfile['iq'], -1))
-        iq = iq / iq.max()
-        iq = 20 * np.log10(iq)
+          iq = np.abs(np.reshape(matfile['iq'], -1))
+          iq = iq / iq.max()
+          iq = 20 * np.log10(iq)
 
-        polarTransform = tfds.core.lazy_imports.polar_transform
-        image, _ = polarTransform.convertToCartesianImage(
-          np.transpose(iq.astype(np.float32)),
-          initialRadius=row['initial_radius'].numpy(),
-          finalRadius=row['final_radius'].numpy(),
-          initialAngle=row['initial_angle'].numpy(),
-          finalAngle=row['final_angle'].numpy(),
-          hasColor=False,
-          order=1)
-        image_scan = np.transpose(image[:, int(row['initial_radius'].numpy()):])
+          polarTransform = tfds.core.lazy_imports.polar_transform
+          image, _ = polarTransform.convertToCartesianImage(
+            np.transpose(iq.astype(np.float32)),
+            initialRadius=row['initial_radius'].numpy(),
+            finalRadius=row['final_radius'].numpy(),
+            initialAngle=row['initial_angle'].numpy(),
+            finalAngle=row['final_angle'].numpy(),
+            hasColor=False,
+            order=1)
+          image_scan = np.transpose(image[:, int(row['initial_radius'].numpy()):])
         
 
-        yield row['filename'], {
+          yield row['filename'], {
             'das': {
                 'dB': iq.astype(np.float32),
                 'real': np.reshape(matfile['iq'], -1).real.astype(np.float32),
@@ -149,9 +149,13 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
             'focus_cm': row['focus_cm'],
             'height': row['axial_samples'],
             'width': row['lateral_samples'],
+            'initial_radius': row['initial_radius'],
+            'final_radius': row['final_radius'],
+            'initial_angle': row['initial_angle'],
+            'final_angle': row['final_angle'],
             'probe': row['probe'],
             'scanner': row['scanner'],
             'target': row['target'],
             'timestamp_id': row['timestamp_id'],
             'harmonic': row['harm']
-        }
+          }
