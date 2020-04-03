@@ -14,8 +14,7 @@
 # limitations under the License.
 
 # Lint as: python3
-"""DAS beamformed phantom images and paired clinical post-processed images."""
-
+"""TODO(duke_ultrasound_scan_convert): Add a description here."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -26,40 +25,16 @@ import numpy as np
 import tensorflow.compat.v2 as tf
 import tensorflow_datasets.public_api as tfds
 
-_CITATION = """\
-@article{DBLP:journals/corr/abs-1908-05782,
-  author    = {Ouwen Huang and
-               Will Long and
-               Nick Bottenus and
-               Gregg E. Trahey and
-               Sina Farsiu and
-               Mark L. Palmeri},
-  title     = {MimickNet, Matching Clinical Post-Processing Under Realistic Black-Box
-               Constraints},
-  journal   = {CoRR},
-  volume    = {abs/1908.05782},
-  year      = {2019},
-  url       = {http://arxiv.org/abs/1908.05782},
-  archivePrefix = {arXiv},
-  eprint    = {1908.05782},
-  timestamp = {Mon, 19 Aug 2019 13:21:03 +0200},
-  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1908-05782},
-  bibsource = {dblp computer science bibliography, https://dblp.org}
-}"""
+# TODO(duke_ultrasound_scan_convert): BibTeX citation
+_CITATION = """
+"""
 
-_DESCRIPTION = """\
-DukeUltrasound is an ultrasound dataset collected at Duke University with a 
-Verasonics c52v probe. It contains delay-and-sum (DAS) beamformed data 
-as well as data post-processed with Siemens Dynamic TCE for speckle 
-reduction, contrast enhancement and improvement in conspicuity of 
-anatomical structures. These data were collected with support from the
-National Institute of Biomedical Imaging and Bioengineering under Grant 
-R01-EB026574 and National Institutes of Health under Grant 5T32GM007171-44.
-A usage example is avalible 
-[here](https://colab.research.google.com/drive/1R_ARqpWoiHcUQWg1Fxwyx-ZkLi0IZ5qs)."""
+# TODO(duke_ultrasound_scan_convert): Description
+_DESCRIPTION = """
+"""
 
 _DATA_URL = {
-    'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
+    #'phantom_data': 'https://research.repository.duke.edu/downloads/vt150j912',
     'mark_data': 'https://research.repository.duke.edu/downloads/4x51hj56d'
 }
 
@@ -166,7 +141,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
         polarTransform = tfds.core.lazy_imports.polar_transform
         image, _ = polarTransform.convertToCartesianImage(
           np.transpose(iq.astype(np.float32)),
-          initialRadius=row['initial_radius'].numpy(),
+          initialRadius=tfds.as_numpy(row['initial_radius']),
           finalRadius=row['final_radius'].numpy(),
           initialAngle=row['initial_angle'].numpy(),
           finalAngle=row['final_angle'].numpy(),
