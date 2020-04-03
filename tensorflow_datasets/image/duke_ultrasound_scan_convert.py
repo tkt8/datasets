@@ -111,7 +111,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
 
     return splits
 
-  
+
   def _generate_examples(self, datapath, csvpath):
     with tf.io.gfile.GFile(csvpath) as f:
       reader = csv.DictReader(f)
@@ -129,7 +129,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
         polarTransform = tfds.core.lazy_imports.polar_transform
         image, _ = polarTransform.convertToCartesianImage(
           np.transpose(iq.astype(np.float32)),
-          initialRadius=tfds.as_numpy(row['initial_radius']),
+          initialRadius=row['initial_radius'].numpy(),
           finalRadius=row['final_radius'].numpy(),
           initialAngle=row['initial_angle'].numpy(),
           finalAngle=row['final_angle'].numpy(),
