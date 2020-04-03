@@ -93,7 +93,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
             name=name,
             gen_kwargs={
                 'datapath': {
-                    'mark_data': dl_paths['mark_data'],
+                    'mark_data': dl_paths['mark_data']#,
                     #'phantom_data': dl_paths['phantom_data']
                 },
                 'csvpath': dl_paths[name]
