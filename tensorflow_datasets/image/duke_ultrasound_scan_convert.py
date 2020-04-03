@@ -111,19 +111,7 @@ class DukeUltrasoundScanConvert(tfds.core.GeneratorBasedBuilder):
 
     return splits
 
-  def scan_convert(image, irad, frad, iang, fang):
-    """Scan converts beam lines"""
-    pt = tfds.core.lazy_imports.polar_transform
-    image, _ = pt.convertToCartesianImage(
-        np.transpose(image),
-        initialRadius=irad,
-        finalRadius=frad,
-        initialAngle=iang,
-        finalAngle=fang,
-        hasColor=False,
-        order=1)
-    return np.transpose(image[:, int(irad):])
-
+  
   def _generate_examples(self, datapath, csvpath):
     with tf.io.gfile.GFile(csvpath) as f:
       reader = csv.DictReader(f)
